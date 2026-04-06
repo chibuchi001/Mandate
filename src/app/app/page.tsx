@@ -71,14 +71,14 @@ function AppContent() {
           </button>
         ))}
       </div>
-      <div className="flex flex-1 overflow-hidden desktop-split">
-        <div className={`panel-half w-full md:w-1/2 flex-col border-r border-m-edge ${mobilePanel === "chat" ? "flex" : "hidden md:flex"}`}>
-          <ChatPanel />
-        </div>
-        <div className={`panel-half w-full md:w-1/2 flex-col ${mobilePanel === "dashboard" ? "flex" : "hidden md:flex"}`}>
-          <DashboardPanel />
-        </div>
-      </div>
+     <div className="flex flex-1 overflow-hidden desktop-split min-h-0">
+  <div className={`panel-half w-full md:w-1/2 flex-col border-r border-m-edge min-h-0 ${mobilePanel === "chat" ? "flex" : "hidden md:flex"}`}>
+    <ChatPanel />
+  </div>
+  <div className={`panel-half w-full md:w-1/2 flex-col min-h-0 ${mobilePanel === "dashboard" ? "flex" : "hidden md:flex"}`}>
+    <DashboardPanel />
+  </div>
+</div>
     </div>
   );
 }
