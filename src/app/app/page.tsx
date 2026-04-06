@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { ChatPanel } from "@/components/chat/ChatPanel";
 import { DashboardPanel } from "@/components/dashboard/DashboardPanel";
@@ -11,16 +12,14 @@ import { useSearchParams } from "next/navigation";
 
 const STORAGE_KEY = "mandate_connected_services";
 
-export default function AppPage() {
+function AppContent() {
   const { user, isLoading } = useUser();
   const searchParams = useSearchParams();
   const connectService = useStore(s => s.connectService);
-  const disconnectService = useStore(s => s.disconnectService);
   const services = useStore(s => s.services);
   const mobilePanel = useStore(s => s.mobilePanel);
   const setMobilePanel = useStore(s => s.setMobilePanel);
 
-  // Load persisted connections on mount
   useEffect(() => {
     if (!user) return;
     try {
@@ -35,7 +34,6 @@ export default function AppPage() {
     } catch {}
   }, [user]);
 
-  // Handle OAuth redirect — mark service as connected
   useEffect(() => {
     if (!user) return;
     const conn = searchParams.get("connection");
@@ -44,7 +42,6 @@ export default function AppPage() {
     if (conn === "github") connectService("github");
   }, [user, searchParams, connectService]);
 
-  // Persist connected services whenever they change
   useEffect(() => {
     const connected = services.filter(s => s.connected).map(s => s.id);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(connected));
@@ -82,5 +79,13 @@ export default function AppPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AppPage() {
+  return (
+    <Suspense fallback={<div className="flex h-screen items-center justify-center bg-m-void"><Loader2 className="h-6 w-6 text-m-copper animate-spin" /></div>}>
+      <AppContent />
+    </Suspense>
   );
 }
