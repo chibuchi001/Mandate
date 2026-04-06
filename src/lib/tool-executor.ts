@@ -6,12 +6,7 @@
 // =============================================================================
 
 import type { AgentAction } from "@/types";
-import {
-  getTokenFromVault,
-  googleCalendarListEvents,
-  slackPostMessage,
-  githubListPRs,
-} from "./token-vault";
+import { getTokenFromVault } from "./token-vault";
 
 const HAS_AUTH0 = () => !!process.env.AUTH0_DOMAIN && !!process.env.AUTH0_CLIENT_ID;
 
