@@ -1,16 +1,23 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import { useSearchParams } from "next/navigation";
 import { ChatPanel } from "@/components/chat/ChatPanel";
 import { DashboardPanel } from "@/components/dashboard/DashboardPanel";
 import { Header } from "@/components/shared/Header";
 import { useStore } from "@/lib/store";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 
 const STORAGE_KEY = "mandate_connected_services";
+
+function Fallback() {
+  return (
+    <div className="flex h-screen items-center justify-center bg-m-void">
+      <Loader2 className="h-6 w-6 text-m-copper animate-spin" />
+    </div>
+  );
+}
 
 function AppContent() {
   const { user, isLoading } = useUser();
@@ -47,13 +54,7 @@ function AppContent() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(connected));
   }, [services]);
 
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-m-void">
-        <Loader2 className="h-6 w-6 text-m-copper animate-spin" />
-      </div>
-    );
-  }
+  if (isLoading) return <Fallback />;
 
   if (!user) {
     if (typeof window !== "undefined") window.location.href = "/api/auth/login";
@@ -84,7 +85,7 @@ function AppContent() {
 
 export default function AppPage() {
   return (
-    <Suspense fallback={<div className="flex h-screen items-center justify-center bg-m-void"><Loader2 className="h-6 w-6 text-m-copper animate-spin" /></div>}>
+    <Suspense fallback={<Fallback />}>
       <AppContent />
     </Suspense>
   );
